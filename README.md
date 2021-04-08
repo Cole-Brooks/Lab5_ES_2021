@@ -9,7 +9,7 @@ The system will have an RS232 interface (9600 8N1) that will be connected to you
 
 The system will implement the following commands.
 
-![image](https://user-images.githubusercontent.com/55246154/114051864-195a7c00-9853-11eb-95e2-79df866d0b35.png)
+![image align="center"](https://user-images.githubusercontent.com/55246154/114051864-195a7c00-9853-11eb-95e2-79df866d0b35.png)
 
 Here is the nominal message exchange between the person typing on the terminal keyboard and analog interface system, which will send information back to the terminal screen (use the Arduino IDE Serial Monitor functionality as terminal emulator). Text shown in BOLD is typed by the user on the keyboard. Non-bold text represents responses by the analog interface system.
 
