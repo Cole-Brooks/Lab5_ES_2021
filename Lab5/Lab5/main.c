@@ -67,10 +67,10 @@ void usart_rx(void)
 	// Return received data
 	if(UDR0 == 71)
 	{
-		usart_tx(118); // v
-		usart_tx(32); // space
-		usart_tx(61); // =
-		usart_tx(10); // \n
+		usart_tx('v'); 
+		usart_tx(' '); 
+		usart_tx('='); 
+		usart_tx('\n'); 
 	}
 }
 
