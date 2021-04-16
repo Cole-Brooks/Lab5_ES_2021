@@ -9,10 +9,12 @@
 
 #include <avr/io.h>
 #include <avr/interrupt.h>
+#include <string.h>
 
 #define F_CPU 16000000L // 16 MHz
 #define USART_BAUDRATE 9600
 #define UBRR_VALUE (((F_CPU / (USART_BAUDRATE * 16UL))) -1)
+
 ////////////////////////////////////////////////////////////////////
 //
 // Function: usart_init
@@ -51,6 +53,18 @@ void usart_tx(uint8_t data)
 	UDR0 = data;
 }
 
+///////////////////////////////
+// Function: print
+// Purpose: print message byte by byte 
+///////////////////////////////
+void print(char msg[]){
+	int i;
+	for (i = 0; i < strlen(msg); i++) {
+		usart_tx(msg[i]);
+	}
+}
+
+
 ////////////////////////////////////////////////////////////////////
 //
 // Function: usart_rx
@@ -65,14 +79,13 @@ void usart_rx(void)
 	// Wait for byte to be received
 	while(!(UCSR0A&(1<<RXC0))){};
 	// Return received data
-	if(UDR0 == 71)
+	if(UDR0 == 71)  // user entered G
 	{
-		usart_tx('v'); 
-		usart_tx(' '); 
-		usart_tx('='); 
-		usart_tx('\n'); 
+		print("V = \n");
 	}
 }
+
+
 
 ////////////////////////////////////////////////////////////////////
 // Function: main
@@ -91,4 +104,5 @@ int main(void)
 		usart_rx();
     }
 }
+
 
