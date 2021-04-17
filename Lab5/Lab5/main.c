@@ -10,6 +10,8 @@
 #include <avr/io.h>
 #include <avr/interrupt.h>
 #include <string.h>
+#include <stdio.h>
+#include <stdlib.h>
 
 #define F_CPU 16000000L // 16 MHz
 #define USART_BAUDRATE 9600
@@ -74,26 +76,25 @@ void usart_init(void)
 //
 // Arguments: void
 //
-// Purpose: starts an analog to digital conversion and prints the outcome
-//		    to the serial monitor
+// Purpose: reads from ADC and returns value
 //
 ////////////////////////////////////////////////////////////////////
-void adc_read(void)
+uint16_t adc_read(void)
 {
 	// Trigger a voltage read
 	PRR |= (0<<PRADC);
 	ADCSRA |= (1<<ADSC);
 	
-	print("v = ");
 	
 	while(ADSC == 1)
 	{
 		// Conversion Processing
 	}
 	
-	// Do math stuff to figure out actual voltage
+	return ADC;
 	
 }
+
 
 ////////////////////////////////////////////////////////////////////
 //
@@ -111,7 +112,11 @@ void usart_rx(void)
 	// Return received data
 	if(UDR0 == 71)  // user entered G
 	{
-		adc_read();
+		float adc_val = adc_read();
+		char adc_str[5];
+		// convert to string and print
+		sprintf(adc_str, "V = %.3f V\n", adc_val);
+		print(adc_str);
 	}
 	if(UDR0 == 77)  // user entered M
 	{
@@ -136,10 +141,10 @@ void usart_rx(void)
 void adc_init(void)
 {
 	// Set ADC voltage reference and input channel (Port A1)
-	ADMUX |= (1<<REFS0) | (1<<MUX0);
+	ADMUX |= (1<<REFS0) | (1<<MUX0);  //AVcc as voltage reference, input channel ADC1
 	// Set up the status register
 	ADCSRA |= (1<<ADEN) | (1<<ADSC) | (1<<ADATE) | (1<<ADIE) | (1<<ADPS2) | (1<<ADPS1) | (1<<ADPS0);
-	sei();
+	sei(); // enable global interrupts
 }
 
 ////////////////////////////////////////////////////////////////////
