@@ -83,6 +83,15 @@ void usart_rx(void)
 	{
 		print("V = \n");
 	}
+	if(UDR0 == 77)  // user entered M
+	{
+		print("t = \n");	
+	}
+	if(UDR0 == 4) // EOT
+	{
+		// do nothing (prevents double print at end for some reason)
+	}
+
 }
 
 
