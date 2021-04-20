@@ -87,7 +87,7 @@ uint16_t adc_read(void)
 		// Conversion Processing
 	}
 	
-	return ADC;
+	return ADCW;
 	
 }
 
@@ -115,7 +115,9 @@ void usart_rx(void)
 		itoa(adc_val, adc_str,10);
 		//char output[10];
 		//sprintf(output, "V = %.3f", adc_double);
+		print("V = ");
 		print(adc_str);
+		print(" V\n");
 	}
 	if(UDR0 == 77)  // user entered M
 	{
