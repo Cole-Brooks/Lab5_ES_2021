@@ -101,32 +101,12 @@ uint16_t adc_read(void)
 // Purpose: Receives data from serial monitor
 //
 ////////////////////////////////////////////////////////////////////
-void usart_rx(void)
+uint16_t usart_rx(void)
 {
 	// Wait for byte to be received
 	while(!(UCSR0A&(1<<RXC0))){};
 	// Return received data
-	if(UDR0 == 71)  // user entered G
-	{
-		uint16_t adc_val = adc_read();
-		//float adc_double = (adc_val * 5.0)/1023;  
-		char adc_str[5];
-		// convert to string and print
-		itoa(adc_val, adc_str,10);
-		//char output[10];
-		//sprintf(output, "V = %.3f", adc_double);
-		print("V = ");
-		print(adc_str);
-		print(" V\n");
-	}
-	if(UDR0 == 77)  // user entered M
-	{
-		print("t = \n");	
-	}
-	if(UDR0 == 4) // EOT
-	{
-		// do nothing (prevents double print at end for some reason)
-	}
+	return UDR0;
 
 }
 
@@ -163,7 +143,39 @@ int main(void)
 	// main loop
     while (1) 
     {
-		usart_rx();
+		uint16_t input = usart_rx();
+		char output_str[5];
+		if(input == 71)  // user entered G
+		{
+			uint16_t adc_val = adc_read();
+			//float adc_double = (adc_val * 5.0)/1023;
+			//char adc_str[5];
+			// convert to string and print
+			itoa(adc_val, output_str,10);
+			//char output[10];
+			//sprintf(output, "V = %.3f", adc_double);
+			print("V = ");
+			print(output_str);
+			print(" V\n");
+		}
+		if(input == 77)  // user entered M, will also print ascii of everything following M
+		{	
+			itoa(input, output_str,10);
+			print(output_str);
+			print("\n");
+			input = usart_rx();
+			while (input != 10){  // comma found, figure out how to get integer following comma
+				itoa(input, output_str,10);
+				print(output_str);
+				print("\n");
+				input = usart_rx();
+			}
+			print("\n\n");
+		}
+		if(input == 4) // EOT
+		{
+			// do nothing (prevents double print at end for some reason)
+		}
     }
 }
 
