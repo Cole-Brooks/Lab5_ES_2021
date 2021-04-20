@@ -225,8 +225,16 @@ int main(void)
 			print(output_str);
 		}
 		if (input_str[0] == 77){ // M
-			measure_multiple(5,10); // dummy values right now
+			int n = input_str[2] - 48;
+			if ((input_str[4] == '1') && (input_str[5] == '0')){
+				measure_multiple(n,10);
+			}
+			else{
+				measure_multiple(n,input_str[4] - 48);
+			}
+			
 		}
+		print("\n");
     }
 }
 
