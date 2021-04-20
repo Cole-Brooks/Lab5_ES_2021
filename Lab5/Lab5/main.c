@@ -12,6 +12,7 @@
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
 
 #define F_CPU 16000000L // 16 MHz
 #define USART_BAUDRATE 9600
@@ -144,6 +145,47 @@ double adc_get_double(void)
 	return adc * 5 / 1024;
 }
 
+//////////////
+// function: delay
+// Purpose: delays a certain number of seconds
+///////////////////
+void delay(int number_of_seconds)
+{
+	// Converting time into milli_seconds
+	int milli_seconds = 1000 * number_of_seconds;
+	
+	// Storing start time
+	clock_t start_time = clock();
+	
+	// looping till required time is not achieved
+	while (clock() < start_time + milli_seconds)
+	;
+}
+
+/////////////////////////
+// Function: measure_multiple
+// Purpose: execute multiple measurements following M command
+/////////////////////////
+void measure_multiple(int n, int dt){
+	char out[5];
+	int dt_out = dt;
+	while (n > 0){
+		print("t = ");
+		sprintf(out,"%i",dt_out);
+		print(out);
+		print(" s, V = ");
+		double v = adc_get_double();
+		sprintf(out,"%d.%02u", (int) v, (int) ((v - (int) v ) * 100) );
+		print(out);
+		print("V\n");
+		
+		n = n - 1;
+		dt_out = dt_out + dt;
+		//delay(dt);
+		
+	}
+}
+
 ////////////////////////////////////////////////////////////////////
 // Function: main
 //
@@ -178,7 +220,7 @@ int main(void)
 			itoa(input, output_str,10);
 			print(output_str);
 			print("\n");
-			while (input != '\n'){  // not at end of string
+			while (input != 10){  // not at end of string
 				input = usart_rx();
 				itoa(input, output_str,10);
 				print(output_str);
@@ -187,6 +229,7 @@ int main(void)
 
 
 			print("\n\n");
+			measure_multiple(5,10);
 		}
 		if(input == 4) // EOT
 		{
