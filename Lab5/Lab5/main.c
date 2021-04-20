@@ -15,6 +15,7 @@
 #include <time.h>
 
 #define F_CPU 16000000L // 16 MHz
+#include <util/delay.h>
 #define USART_BAUDRATE 9600
 #define UBRR_VALUE (((F_CPU / (USART_BAUDRATE * 16UL))) -1)
 #define ADC_CONVERSION 5.0/1024
@@ -145,23 +146,6 @@ double adc_get_double(void)
 	return adc * 5 / 1024;
 }
 
-//////////////
-// function: delay
-// Purpose: delays a certain number of seconds
-///////////////////
-void delay(int number_of_seconds)
-{
-	// Converting time into milli_seconds
-	int milli_seconds = 1000 * number_of_seconds;
-	
-	// Storing start time
-	clock_t start_time = clock();
-	
-	// looping till required time is not achieved
-	while (clock() < start_time + milli_seconds)
-	;
-}
-
 /////////////////////////
 // Function: measure_multiple
 // Purpose: execute multiple measurements following M command
@@ -180,9 +164,13 @@ void measure_multiple(int n, int dt){
 		print("V\n");
 		
 		n = n - 1;
-		dt_out = dt_out + dt;
-		//delay(dt);  TODO: figure out why this is throwing an error
 		
+		int dt_buff = dt;
+		while(dt_buff > 0)
+		{
+			_delay_ms(1000);
+			dt_buff --;
+		}
 	}
 }
 
