@@ -161,17 +161,32 @@ int main(void)
 		}
 		if(input == 'M')  // user entered M, will also print ascii of everything following M
 		{	
-			itoa(input, output_str,10);
-			print(output_str);
-			print("\n");
-			while (input != '\n'){  // not at end of string
-				input = usart_rx();
-				itoa(input, output_str,10);
-				print(output_str);
-				print("\n");
+			// parse full command:
+			// A properly formatted command will come in the form of M,n,dt.
+			char command[2] = "nn";
+			
+			// deal with the comma after M
+			input = usart_rx();
+			
+			// Read command. If any params are NaN print instructions for command to console
+			input = usart_rx();
+			itoa(input,command[0],10);
+			
+			// deal with the comma after n
+			input = usart_rx();
+			
+			// read in dt
+			input = usart_rx();
+			itoa(input, command[1], 10);
+
+			if(command == "nn")
+			{
+				print("Invalid Command Error: Commands should be formatted as follows:   M,n,dt");
 			}
-
-
+			else
+			{
+				
+			}
 			print("\n\n");
 		}
 		if(input == 4) // EOT
