@@ -36,8 +36,11 @@ void usart_tx(uint8_t data)
 }
 
 ///////////////////////////////
+//
 // Function: print
+//
 // Purpose: print message byte by byte
+//
 ///////////////////////////////
 void print(char msg[]){
 	int i;
@@ -107,7 +110,6 @@ uint16_t usart_rx(void)
 	while(!(UCSR0A&(1<<RXC0))){};
 	// Return received data
 	return UDR0;
-
 }
 
 ////////////////////////////////////////////////////////////////////
@@ -125,7 +127,6 @@ void adc_init(void)
 	ADMUX |= (1<<REFS0) | (1<<MUX0);  //AVcc as voltage reference
 	// Set up the status register
 	ADCSRA |= (1<<ADEN) | (1<<ADSC) | (1<<ADPS2) | (1<<ADPS1) | (1<<ADPS0);
-	sei(); // enable global interrupts
 }
 
 ////////////////////////////////////////////////////////////////////
@@ -145,7 +146,7 @@ int main(void)
     {
 		uint16_t input = usart_rx();
 		char output_str[5];
-		if(input == 71)  // user entered G
+		if(input == 'G')  // user entered G
 		{
 			uint16_t adc_val = adc_read();
 			//float adc_double = (adc_val * 5.0)/1023;
@@ -158,12 +159,12 @@ int main(void)
 			print(output_str);
 			print(" V\n");
 		}
-		if(input == 77)  // user entered M, will also print ascii of everything following M
+		if(input == 'M')  // user entered M, will also print ascii of everything following M
 		{	
 			itoa(input, output_str,10);
 			print(output_str);
 			print("\n");
-			while (input != 10){  // not at end of string
+			while (input != '\n'){  // not at end of string
 				input = usart_rx();
 				itoa(input, output_str,10);
 				print(output_str);
