@@ -163,13 +163,14 @@ int main(void)
 			itoa(input, output_str,10);
 			print(output_str);
 			print("\n");
-			input = usart_rx();
-			while (input != 10){  // comma found, figure out how to get integer following comma
+			while (input != 10){  // not at end of string
+				input = usart_rx();
 				itoa(input, output_str,10);
 				print(output_str);
 				print("\n");
-				input = usart_rx();
 			}
+
+
 			print("\n\n");
 		}
 		if(input == 4) // EOT
