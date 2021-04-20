@@ -181,7 +181,7 @@ void measure_multiple(int n, int dt){
 		
 		n = n - 1;
 		dt_out = dt_out + dt;
-		//delay(dt);
+		//delay(dt);  TODO: figure out why this is throwing an error
 		
 	}
 }
@@ -197,61 +197,38 @@ int main(void)
 	// Initializations
 	usart_init();    
 	adc_init();
-	
+	uint16_t input;
 	// main loop
-    while (1) 
+    while (1)
     {
-		uint16_t input = usart_rx();
-		char output_str[5];
-		if(input == 'G')  // user entered G
-		{
-			double adc_val = adc_get_double();
-			
-			// do some c nonsense to convert float to string
-			char out[8];
-			sprintf(out,"%d.%02u", (int) adc_val, (int) ((adc_val - (int) adc_val ) * 100) );
-			
-			print("V = ");
-			print(out);
-			print(" V\n");
-		}
-		if(input == 'M')  // user entered M, will also print ascii of everything following M
-		{
-			int num_temp = 0; // temporary storage of n and dt
-			int n = 0;
-			int dt = 0;
-			int gotn = 0;	
-			itoa(input, output_str,10);
-			print(output_str);
+	    input = usart_rx();
+	    char input_str[5];
+	    if(input == 71)  // user entered G
+	    {
+		    uint16_t adc_val = adc_read();
+		    itoa(adc_val, input_str,10);
+		    print("V = ");
+		    print(input_str);
+		    print(" V\n");
+	    }
+	    if(input == 77)  // user entered M, will also print ascii of everything following M
+	    {
+		    itoa(input, input_str,10);
+			print(input_str);
 			print("\n");
-			while (input != 10){  // not at end of string
+		    while (input != 10){  // end found
 				input = usart_rx();
-				if (input == 44){ // found comma
-					input = usart_rx();
-					while (input != 44){
-						input = usart_rx();
-						itoa(input, output_str,10);
-						num_temp += atoi(output_str);
-					}
-					if (gotn == 0){
-						n = num_temp;
-						gotn = 1;
-					}
-					else if (gotn == 1){
-						dt = num_temp;
-					}
-					
-				}
-			}
-
-
-			print("\n\n");
-			measure_multiple(n,dt);
-		}
-		if(input == 4) // EOT
-		{
-			// do nothing (prevents double print at end for some reason)
-		}
+				itoa(input, input_str,10);
+			    print(input_str);
+			    print("\n");
+			    
+		    }
+		    print("\n\n");
+	    }
+	    if(input == 4) // EOT
+	    {
+		    // do nothing (prevents double print at end for some reason)
+	    }
     }
 }
 
