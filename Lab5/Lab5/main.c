@@ -17,9 +17,6 @@
 #define USART_BAUDRATE 9600
 #define UBRR_VALUE (((F_CPU / (USART_BAUDRATE * 16UL))) -1)
 
-ISR(ADC_vect)
-{
-}
 
 ////////////////////////////////////////////////////////////////////
 //
@@ -82,7 +79,6 @@ void usart_init(void)
 uint16_t adc_read(void)
 {
 	// Trigger a voltage read
-	PRR |= (0<<PRADC);
 	ADCSRA |= (1<<ADSC);
 	
 	
@@ -112,10 +108,13 @@ void usart_rx(void)
 	// Return received data
 	if(UDR0 == 71)  // user entered G
 	{
-		float adc_val = adc_read();
+		uint16_t adc_val = adc_read();
+		//float adc_double = (adc_val * 5.0)/1023;  
 		char adc_str[5];
 		// convert to string and print
-		sprintf(adc_str, "V = %.3f V\n", adc_val);
+		itoa(adc_val, adc_str,10);
+		//char output[10];
+		//sprintf(output, "V = %.3f", adc_double);
 		print(adc_str);
 	}
 	if(UDR0 == 77)  // user entered M
@@ -141,9 +140,9 @@ void usart_rx(void)
 void adc_init(void)
 {
 	// Set ADC voltage reference and input channel (Port A1)
-	ADMUX |= (1<<REFS0) | (1<<MUX0);  //AVcc as voltage reference, input channel ADC1
+	ADMUX |= (1<<REFS0) | (1<<MUX0);  //AVcc as voltage reference
 	// Set up the status register
-	ADCSRA |= (1<<ADEN) | (1<<ADSC) | (1<<ADATE) | (1<<ADIE) | (1<<ADPS2) | (1<<ADPS1) | (1<<ADPS0);
+	ADCSRA |= (1<<ADEN) | (1<<ADSC) | (1<<ADPS2) | (1<<ADPS1) | (1<<ADPS0);
 	sei(); // enable global interrupts
 }
 
