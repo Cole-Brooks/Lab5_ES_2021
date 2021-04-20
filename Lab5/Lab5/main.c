@@ -172,6 +172,7 @@ void measure_multiple(int n, int dt){
 		print("V\n");
 		
 		n = n - 1;
+		dt_out = dt_out + dt;
 	}
 }
 
@@ -214,7 +215,7 @@ int main(void)
 		char output_str[20];
 		get_string(input_str);
 		
-		print("input_str: ");
+		print("Input: ");
 		print(input_str);
 		print("\n");
 	
