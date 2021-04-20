@@ -227,13 +227,29 @@ int main(void)
 			print(output_str);
 		}
 		if (input_str[0] == 77){ // M
-			int n = input_str[2] - 48;
-			if ((input_str[4] == '1') && (input_str[5] == '0')){
-				measure_multiple(n,10);
+			int n;
+			
+			if ((input_str[1] == 44) && (input_str[4] == 44)){ // n is two digit number
+				n = ((input_str[2]-48)*10) + (input_str[3]-48);
+				
+				if ((input_str[5] == '1') && (input_str[6] == '0')){
+					measure_multiple(n,10);
+				}
+				else{
+					measure_multiple(n,input_str[5] - 48);
+				}
 			}
 			else{
-				measure_multiple(n,input_str[4] - 48);
+				n = input_str[2]-48;
+				if ((input_str[4] == '1') && (input_str[5] == '0')){
+					measure_multiple(n,10);
+				}
+				else{
+					measure_multiple(n,input_str[4] - 48);
+				}
 			}
+			
+			
 			
 		}
 		print("\n");
