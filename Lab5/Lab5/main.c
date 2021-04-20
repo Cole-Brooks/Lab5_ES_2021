@@ -154,6 +154,14 @@ void measure_multiple(int n, int dt){
 	char out[5];
 	int dt_out = dt;
 	while (n > 0){
+		// delay stuff
+		int dt_buff = dt;
+		while(dt_buff > 0)
+		{
+			_delay_ms(1000);
+			dt_buff --;
+		}
+		
 		print("t = ");
 		sprintf(out,"%i",dt_out);
 		print(out);
@@ -164,13 +172,6 @@ void measure_multiple(int n, int dt){
 		print("V\n");
 		
 		n = n - 1;
-		
-		int dt_buff = dt;
-		while(dt_buff > 0)
-		{
-			_delay_ms(1000);
-			dt_buff --;
-		}
 	}
 }
 
