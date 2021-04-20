@@ -16,7 +16,7 @@
 #define F_CPU 16000000L // 16 MHz
 #define USART_BAUDRATE 9600
 #define UBRR_VALUE (((F_CPU / (USART_BAUDRATE * 16UL))) -1)
-
+#define ADC_CONVERSION 5.0/1024
 
 ////////////////////////////////////////////////////////////////////
 //
@@ -89,9 +89,8 @@ uint16_t adc_read(void)
 	{
 		// Conversion Processing
 	}
-	
+ 
 	return ADCW;
-	
 }
 
 
@@ -130,6 +129,22 @@ void adc_init(void)
 }
 
 ////////////////////////////////////////////////////////////////////
+//
+// Function: adc_get_double
+//
+// Arguments: void
+//
+// Purpose: gets an ADC conversion and converts the output to a double
+//
+//
+////////////////////////////////////////////////////////////////////
+double adc_get_double(void)
+{
+	double adc = adc_read();
+	return adc * 5 / 1024;
+}
+
+////////////////////////////////////////////////////////////////////
 // Function: main
 //
 // Purpose: Drives the program
@@ -148,15 +163,14 @@ int main(void)
 		char output_str[5];
 		if(input == 'G')  // user entered G
 		{
-			uint16_t adc_val = adc_read();
-			//float adc_double = (adc_val * 5.0)/1023;
-			//char adc_str[5];
-			// convert to string and print
-			itoa(adc_val, output_str,10);
-			//char output[10];
-			//sprintf(output, "V = %.3f", adc_double);
+			double adc_val = adc_get_double();
+			
+			// do some c nonsense to convert float to string
+			char out[8];
+			sprintf(out,"%d.%02u", (int) adc_val, (int) ((adc_val - (int) adc_val ) * 100) );
+			
 			print("V = ");
-			print(output_str);
+			print(out);
 			print(" V\n");
 		}
 		if(input == 'M')  // user entered M, will also print ascii of everything following M
