@@ -186,6 +186,26 @@ void measure_multiple(int n, int dt){
 	}
 }
 
+////////////////////////
+// Function: get_string
+// Purpose: gets string from serial monitor
+///////////////
+const char* get_string(char input_str[]){
+	char buffer[10];
+	uint16_t input = usart_rx();
+	
+	int i = 0;
+	while (input != 10){
+		itoa(input, buffer, 10);
+		//print(buffer);
+		input_str[i] = atoi(buffer);
+		i = i + 1;
+		input = usart_rx();
+	}
+	
+	return input_str;
+}
+
 ////////////////////////////////////////////////////////////////////
 // Function: main
 //
@@ -197,38 +217,28 @@ int main(void)
 	// Initializations
 	usart_init();    
 	adc_init();
-	uint16_t input;
+
 	// main loop
     while (1)
-    {
-	    input = usart_rx();
-	    char input_str[5];
-	    if(input == 71)  // user entered G
-	    {
-		    uint16_t adc_val = adc_read();
-		    itoa(adc_val, input_str,10);
-		    print("V = ");
-		    print(input_str);
-		    print(" V\n");
-	    }
-	    if(input == 77)  // user entered M, will also print ascii of everything following M
-	    {
-		    itoa(input, input_str,10);
-			print(input_str);
-			print("\n");
-		    while (input != 10){  // end found
-				input = usart_rx();
-				itoa(input, input_str,10);
-			    print(input_str);
-			    print("\n");
-			    
-		    }
-		    print("\n\n");
-	    }
-	    if(input == 4) // EOT
-	    {
-		    // do nothing (prevents double print at end for some reason)
-	    }
+    {	
+		char input_str[10] = {};
+		char output_str[20];
+		get_string(input_str);
+		
+		print("input_str: ");
+		print(input_str);
+		print("\n");
+	
+		
+		if (input_str[0] == 71){ // G
+			double v = adc_get_double();
+			//print("G");
+			sprintf(output_str,"V = %d.%02u V", (int) v, (int) ((v - (int) v ) * 100) );
+			print(output_str);
+		}
+		if (input_str[0] == 77){ // M
+			measure_multiple(5,10); // dummy values right now
+		}
     }
 }
 
