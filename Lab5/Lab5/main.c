@@ -216,20 +216,37 @@ int main(void)
 			print(" V\n");
 		}
 		if(input == 'M')  // user entered M, will also print ascii of everything following M
-		{	
+		{
+			int num_temp = 0; // temporary storage of n and dt
+			int n = 0;
+			int dt = 0;
+			int gotn = 0;	
 			itoa(input, output_str,10);
 			print(output_str);
 			print("\n");
 			while (input != 10){  // not at end of string
 				input = usart_rx();
-				itoa(input, output_str,10);
-				print(output_str);
-				print("\n");
+				if (input == 44){ // found comma
+					input = usart_rx();
+					while (input != 44){
+						input = usart_rx();
+						itoa(input, output_str,10);
+						num_temp += atoi(output_str);
+					}
+					if (gotn == 0){
+						n = num_temp;
+						gotn = 1;
+					}
+					else if (gotn == 1){
+						dt = num_temp;
+					}
+					
+				}
 			}
 
 
 			print("\n\n");
-			measure_multiple(5,10);
+			measure_multiple(n,dt);
 		}
 		if(input == 4) // EOT
 		{
